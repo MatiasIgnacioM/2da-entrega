@@ -1,0 +1,47 @@
+[
+    {
+            "id" : 1,
+            "titulo" : "Figura Kanao",
+            "imagen" : "https://i.ibb.co/LrK2r4n/figura-2.jpg",
+            "descripcion" : "Figura Kanao, kimetsu no yaiba",
+            "categoria" : {
+                "nombre" :"Figuras",
+                "id" :"figuras"
+            },
+            "precio" : 16000
+        },
+    
+        {
+            "id" : 2,
+            "titulo" : "Figura Rengoku",
+            "imagen" : "https://i.ibb.co/hgPvqJK/figura.jpg",
+            "descripcion" : "Figura Rengoku 15 cm Kimetsu No Yaiba",
+            "categoria" : {
+                "nombre" :"Figuras",
+                "id" :"figuras"
+            },
+            "precio" : 18000
+        },
+        {
+            "id" : 3,
+            "titulo" : "Monedero Totoro",
+            "imagen" : "https://i.ibb.co/RDkHZ11/monedero.jpg",
+            "descripcion" : "Monedero de totoro tamaño normal.",
+            "categoria" : {
+                "nombre" :"Otros",
+                "id" :"otros"
+            },
+            "precio" : 4000
+        },
+        {
+            "id" : "4",
+            "titulo" : "Box mediana",
+            "imagen" : "https://i.ibb.co/MsZDYMh/box.jpg",
+            "descripcion" : "Box mediana para regalo Jujutsu Kaisen.",
+            "categoria" : {
+                "nombre" :"Boxes",
+                "id" :"boxes"
+            },
+            "precio" : 20000
+        }
+    ]
