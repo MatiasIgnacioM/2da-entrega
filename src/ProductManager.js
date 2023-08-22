@@ -3,7 +3,7 @@ import path from "path";
 
 export class ProductManager {
   constructor(fileName) {
-    this.filePath = path.join(__dirname, fileName);
+    this.filePath = path.join(fileName);
   }
 
   async readProductsFile() {
