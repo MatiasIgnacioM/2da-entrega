@@ -8,7 +8,8 @@
                 "nombre" :"Figuras",
                 "id" :"figuras"
             },
-            "precio" : 16000
+            "precio" : 16000,
+            "code" : "MC1"
         },
     
         {
@@ -20,7 +21,8 @@
                 "nombre" :"Figuras",
                 "id" :"figuras"
             },
-            "precio" : 18000
+            "precio" : 18000,
+            "code" : "MC2"
         },
         {
             "id" : 3,
@@ -31,7 +33,8 @@
                 "nombre" :"Otros",
                 "id" :"otros"
             },
-            "precio" : 4000
+            "precio" : 4000,
+            "code" : "MC3"
         },
         {
             "id" : "4",
@@ -42,6 +45,8 @@
                 "nombre" :"Boxes",
                 "id" :"boxes"
             },
-            "precio" : 20000
+            "precio" : 20000,
+            "code" : "MC4"
+            
         }
     ]
