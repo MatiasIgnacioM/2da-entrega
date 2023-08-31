@@ -48,7 +48,7 @@ export class ProductManager {
     return products;
   }
 
-  async getProductsById(id) {
+  async getProductById(id) {
     if (!fs.existsSync(this.#fileName))
       return '[500] Error';
 

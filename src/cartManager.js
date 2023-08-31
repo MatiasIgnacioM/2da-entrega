@@ -33,14 +33,20 @@ export class CartManager {
         return cartAdd
     }
 
-    async getProductsFromCart(id){
-        if (!fs.existsSync(this.#path)) return '[666] DB file does not exists.'
-        let data = await fs.promises.readFile(this.#path, 'utf-8')
-        let carts = JSON.parse(data)
-        let cart = carts.find(item=>item.id === id)
-        if(!cart) return '[666] Not Found'
-        return cart
-    }
+    async getProductFromCart(cartId, productId) {
+    if (!fs.existsSync(this.#path)) return '[666] DB file does not exist.'
+    let data = await fs.promises.readFile(this.#path, 'utf-8')
+    let carts = JSON.parse(data)
+    let cart = carts.find(item => item.id === cartId)
+    
+    if (!cart) return '[666] Cart Not Found'
+    
+    let product = cart.products.find(product => product.product === productId)
+    
+    if (!product) return '[666] Product Not Found'
+    
+    return product;
+}
 
     async addProductToCart (cid, pid) {
         if (!fs.existsSync(this.#path)) return '[666] DB file does not exists.'
