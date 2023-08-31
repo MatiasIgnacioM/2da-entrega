@@ -1,10 +1,10 @@
 {
   "scripts": {
-    "start": "node server.js"
+    "start": "node app.js"
   },
   "name": "segundaentrega",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "src/app.js",
   "type": "module",
   "keywords": [],
   "author": "",

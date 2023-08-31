@@ -1,8 +1,8 @@
 import fs from 'fs'
-import { ProductManager } from './productManager'
+import { ProductManager } from './productManager.js'
 
 
-const productManager = new ProductManager ('./data/pr4oducts.json')
+const productManager = new ProductManager ('./data/products.json')
 
 export class CartManager {
     #path

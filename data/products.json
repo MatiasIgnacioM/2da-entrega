@@ -37,7 +37,7 @@
             "code" : "MC3"
         },
         {
-            "id" : "4",
+            "id" : 4,
             "titulo" : "Box mediana",
             "imagen" : "https://i.ibb.co/MsZDYMh/box.jpg",
             "descripcion" : "Box mediana para regalo Jujutsu Kaisen.",

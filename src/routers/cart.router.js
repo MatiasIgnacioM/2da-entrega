@@ -1,7 +1,9 @@
 import { Router } from "express"
-import { CartManager } from "../cartManager"
+import { CartManager } from "../cartManager.js"
+import router from "./product.router.js"
 
-const router = router()
+
+const router = Router()
 const cartManager = new CartManager('./dat/carts.json')
 
 router.post('/',async(req,res)=>{
@@ -22,4 +24,7 @@ router.get('/:cid', async (req, res)=>{
     }
     res.status(201).json({status: 'success', payload: result})
 })
+
+export default cartRouter;
+
 
