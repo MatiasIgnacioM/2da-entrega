@@ -1,12 +1,15 @@
 {
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon"
+    
   },
   "name": "segundaentrega",
   "version": "1.0.0",
   "main": "src/app.js",
   "type": "module",
   "keywords": [],
+  
   "author": "",
   "license": "ISC",
   "bugs": {

@@ -1,12 +1,12 @@
-import { router } from "express";
+import { Router } from "express";
 import { ProductManager } from "../productManager.js";
 
-const router = router();
-const ProductManager = new ProductManager("./data/products.json");
+const router = Router(); // Cambio de nombre de la variable
+const productManager = new ProductManager("./data/products.json");
 
 router.get("/", async (req, res) => {
   try {
-    const products = await ProductManager.getProducts();
+    const products = await productManager.getProducts(); // Cambio de nombre de la variable
     const limit = parseInt(req.query.limit);
 
     if (products.length === 0) {
@@ -27,7 +27,7 @@ router.get("/", async (req, res) => {
 router.get("/:pid", async (req, res) => {
   try {
     const id = parseInt(req.params.pid);
-    const product = await ProductManager.getProductById(id);
+    const product = await productManager.getProductById(id); // Cambio de nombre de la variable
 
     if (!product || Object.keys(product).length === 0) {
       return res.status(404).json({ error: "Product not found." });
@@ -43,7 +43,7 @@ router.get("/:pid", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const { title, description, price, thumbnail, code, stock } = req.body;
-    const addedProduct = await ProductManager.addProduct(
+    const addedProduct = await productManager.addProduct( // Cambio de nombre de la variable
       title,
       description,
       price,
@@ -64,7 +64,7 @@ router.put("/:pid", async (req, res) => {
     const id = parseInt(req.params.pid);
     const updatedProduct = req.body;
 
-    const updated = await ProductManager.updateProductById(id, updatedProduct);
+    const updated = await productManager.updateProductById(id, updatedProduct); // Cambio de nombre de la variable
     if (!updated) {
       return res.status(404).json({ error: `Product with ID ${id} not found.` });
     }
@@ -79,7 +79,7 @@ router.put("/:pid", async (req, res) => {
 router.delete("/:pid", async (req, res) => {
   try {
     const id = parseInt(req.params.pid);
-    const deletedProduct = await ProductManager.deleteProductById(id);
+    const deletedProduct = await productManager.deleteProductById(id); // Cambio de nombre de la variable
 
     if (!deletedProduct) {
       return res.status(404).json({ error: `Product with ID ${id} not found.` });
