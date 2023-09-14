@@ -24,7 +24,7 @@ app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
 app.use('/products', viewsRouter)
 
-const httpServer = app.listen(8080, () => console.log('Servicio cargado'))
+const httpServer = app.listen(8080, () => console.log('Server up'))
 const io = new Server(httpServer)
 
 io.on("connection", (socket) => {
