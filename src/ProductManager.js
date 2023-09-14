@@ -9,7 +9,7 @@ export class ProductManager {
     this.#init();
   }
 
-  async #init() {
+  async #init() { 
     if (!fs.existsSync(this.#fileName)) {
       await fs.promises.writeFile(this.#fileName, JSON.stringify([], null, 2));
     }
@@ -21,31 +21,24 @@ export class ProductManager {
 
   async addProduct(product) {
     if (!product.titulo || !product.descripcion || !product.precio || !product.categoria || !product.imagen || !product.id)
-      return '[400] Required fields missing';
-
-    if (!fs.existsSync(this.#fileName))
-      return '[500] Error';
-
-    let data = await fs.promises.readFile(this.#fileName, 'utf-8');
-    let products = JSON.parse(data);
-
-    const found = products.find(item => item.id === product.id);
-    if (found) return '[400] ID already exists';
-
-    const productAdd = { id: this.#generateID(products), status: true, thumbnails: [], ...product };
-    products.push(productAdd);
-
-    await fs.promises.writeFile(this.#fileName, JSON.stringify(products, null, 2));
-    return productAdd;
+      return '[400] Required fields missing'
+    if (!fs.existsSync(this.#fileName)) return '[500] Error'
+    let data = await fs.promises.readFile(this.#fileName, 'utf-8')
+    let products = JSON.parse(data)
+    const found = products.find(item => item.id === product.id)    
+    if (found) return '[400] ID already exists'    
+    const productAdd = { id: this.#generateID(products), status: true, thumbnails: [], ...product }
+    products.push(productAdd)
+    await fs.promises.writeFile(this.#fileName, JSON.stringify(products, null, 2))
+    return productAdd
   }
 
-  async getProducts() {
+  async getProducts() {   
     if (!fs.existsSync(this.#fileName))
-      return '[500] Error';
-
-    let data = await fs.promises.readFile(this.#fileName, 'utf-8');
-    const products = JSON.parse(data);
-    return products;
+      return '[500] Error'
+    let data = await fs.promises.readFile(this.#fileName, 'utf-8')
+    const products = JSON.parse(data)
+    return products
   }
 
   async getProductById(id) {
@@ -55,40 +48,63 @@ export class ProductManager {
     let data = await fs.promises.readFile(this.#fileName, 'utf-8');
     const products = JSON.parse(data);
     let product = products.find(item => item.id === id);
+    if (!product){
+      return {error: 'product not found'}
+    }
     return product;
   }
 
-  async updateProduct(id, updatedFields) {
-    if (!fs.existsSync(this.#fileName))
-      return '[500] Error';
+  async updateProduct(id, updateProduct) {
+    if (!fs.existsSync(this.#fileName)) return '[500] Error';
 
+    let isFound = false 
     let data = await fs.promises.readFile(this.#fileName, 'utf-8');
     let products = JSON.parse(data);
 
-    const productToUpdate = products.find(item => item.id === id);
-    if (!productToUpdate) return '[404] Product not found';
+    let newProducts = products.map(item =>{
+      if (item.id === id) {
+        isFound = true
 
-    // Update the fields of the product
-    Object.assign(productToUpdate, updatedFields);
+        return {
+          ...item,
+          ...updateProduct
+        }
 
-    await fs.promises.writeFile(this.#fileName, JSON.stringify(products, null, 2));
-    return productToUpdate;
+      } else {
+        return item
+      }      
+    })
+    if (!isFound) {
+      return '[error]'
+    }
+
+    await fs.promises.writeFile(this.#fileName, JSON.stringify(newProducts, null, 2))
+    return newProducts.find(item => item.id === id)    
   }
 
   async deleteProduct(id) {
-    if (!fs.existsSync(this.#fileName))
-      return '[500] Error';
+    if (!fs.existsSync(this.#fileName)) {
+        return 'El archivo no existe en la base de datos.'
+    }
+    
+    let isFound = false
+    let data = await fs.promises.readFile(this.#fileName, 'utf-8')
+    let products = JSON.parse(data)
+    let newProducts = products.filter(item => item.id !== id)
 
-    let data = await fs.promises.readFile(this.#fileName, 'utf-8');
-    let products = JSON.parse(data);
+    if (products.length !== newProducts.length) {
+        isFound = true
+    }
 
-    const productIndexToDelete = products.findIndex(item => item.id === id);
-    if (productIndexToDelete === -1) return '[404] Product not found';
+    if (!isFound) {
+        return 'El producto no existe.'
+    }
 
-    // Remove the product from the array
-    products.splice(productIndexToDelete, 1);
+    await fs.promises.writeFile(this.#fileName, JSON.stringify(newProducts, null, 2))
+    
+    return newProducts
 
-    await fs.promises.writeFile(this.#fileName, JSON.stringify(products, null, 2));
-    return '[200] Product deleted successfully';
-  }
 }
+}
+
+export default ProductManager;

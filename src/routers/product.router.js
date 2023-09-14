@@ -1,103 +1,104 @@
 import { Router } from "express";
 import { ProductManager } from "../productManager.js";
 
-const router = Router(); // Cambio de nombre de la variable
-const productManager = new ProductManager("./data/products.json");
+const router = Router() 
+const productManager = new ProductManager("./data/products.json")
 
-router.get("/", async (req, res) => {
-  try {
-    const products = await productManager.getProducts(); // Cambio de nombre de la variable
-    const limit = parseInt(req.query.limit);
+const ERROR_CODES = {
+  'product_not_found': 404, 
+  'invalid_data': 400
+}
 
-    if (products.length === 0) {
-      return res.status(404).json({ error: "No products found in the database." });
+router.get('/', async (req, res) => {
+    try {
+        const result = await productManager.getProducts()
+        const limit = req.query.limit 
+
+        res.status(200).json({ status: 'success', payload: result.slice(0, limit)})
+
+    } catch (error) {
+        if (error.code in ERROR_CODES) {
+            res.status(ERROR_CODES[error.code]).json({ error: error.message })
+
+        } else {
+            res.status(500).json({ error: 'Internal Server Error' })
+        }
     }
+})
 
-    if (!isNaN(limit) && limit >= 0) {
-      res.status(200).json({ payload: products.slice(0, limit) });
-    } else {
-      res.status(200).json({ payload: products });
+router.get('/:pid', async (req, res) => {
+    const pid = parseInt(req.params.pid);
+    
+    try {
+        const result = await productManager.getProductById(pid)
+        res.status(200).json({ status: 'success', payload: result })
+
+    } catch (error) {
+        if (error.code in ERROR_CODES) {
+            return res.status(ERROR_CODES[error.code]).json({ error: error.message })
+
+        } else {
+            return res.status(500).json({ error: 'Internal Server Error' })
+        }
     }
-  } catch (error) {
-    console.log("Error getting products:", error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
+})
 
-router.get("/:pid", async (req, res) => {
-  try {
-    const id = parseInt(req.params.pid);
-    const product = await productManager.getProductById(id); // Cambio de nombre de la variable
 
-    if (!product || Object.keys(product).length === 0) {
-      return res.status(404).json({ error: "Product not found." });
+router.post('/', async (req, res) => {
+    const product = req.body
+    
+    try {
+        const result = await productManager.addProduct(product)
+
+        res.status(201).json({ status: 'success', payload: result })
+
+    } catch (error) {
+        if (error.code in ERROR_CODES) {
+            res.status(ERROR_CODES[error.code]).json({ error: error.message })
+
+        } else {
+            res.status(500).json({ error: 'Internal Server Error' })
+        }
     }
+})
 
-    res.status(200).json({ payload: product });
-  } catch (error) {
-    console.log("Error getting product:", error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
 
-router.post("/", async (req, res) => {
-  try {
-    const { title, description, price, thumbnail, code, stock } = req.body;
-    const addedProduct = await productManager.addProduct( // Cambio de nombre de la variable
-      title,
-      description,
-      price,
-      thumbnail,
-      code,
-      stock
-    );
+router.put('/:pid', async (req, res) => {
+    const pid = parseInt(req.params.pid)
+    const data = req.body
+    
+    try {
+        const result = await productManager.updateProduct(pid.data)
 
-    res.status(201).json({ message: "Product added successfully.", payload: addedProduct });
-  } catch (error) {
-    console.log("Error adding product:", error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
+        res.status(201).json({ status: "success", payload: result })
 
-router.put("/:pid", async (req, res) => {
-  try {
-    const id = parseInt(req.params.pid);
-    const updatedProduct = req.body;
+    } catch (error) {
+        if (error.code in ERROR_CODES) {
+            res.status(ERROR_CODES[error.code]).json({ error: error.message })
 
-    const updated = await productManager.updateProductById(id, updatedProduct); // Cambio de nombre de la variable
-    if (!updated) {
-      return res.status(404).json({ error: `Product with ID ${id} not found.` });
+        } else {
+            res.status(500).json({ error: 'Internal Server Error' })
+        }
     }
+})
 
-    res.status(200).json({ message: "Product updated successfully.", product: updated });
-  } catch (error) {
-    console.log("Error updating product:", error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
 
 router.delete("/:pid", async (req, res) => {
-  try {
-    const id = parseInt(req.params.pid);
-    const deletedProduct = await productManager.deleteProductById(id); // Cambio de nombre de la variable
+    const pid = parseInt(req.params.pid);
+    
+    try {
+        const result = await productManager.deleteProduct(pid)
 
-    if (!deletedProduct) {
-      return res.status(404).json({ error: `Product with ID ${id} not found.` });
-    }
+        res.status(201).json({ status: "success", payload: result })
 
-    res.status(200).json({
-      message: "Product deleted successfully.",
-      productDeleted: deletedProduct,
-    });
-  } catch (error) {
-    console.log("Error deleting product:", error.message);
-    res.status(500).json({ error: error.message });
-  } finally {
-    if (deletedProduct) {
-      console.log(`Product with ID ${deletedProduct.id} deleted:`);
-      console.log(deletedProduct);
+    } catch (error) {
+        if (error.code in ERROR_CODES) {
+            res.status(ERROR_CODES[error.code]).json({ error: error.message })
+
+        } else {
+            res.status(500).json({ error: 'Internal Server Error' })
+        }
     }
-  }
-});
+})
 
 export default router;

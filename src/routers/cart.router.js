@@ -1,31 +1,80 @@
-import express from 'express';
-import { CartManager } from "../cartManager.js";
+import  { Router } from 'express'
+import { CartManager } from "../cartManager.js"
 
-const router = express.Router();
+const router = Router()
 const cartManager = new CartManager('./data/carts.json');
 
-router.post('/', async (req, res) => {
-    const result = await cartManager.createCart()
-    if (typeof result == 'string') {
-        const error = result.split('')
-        return res.status(parseInt(error[0].slice(1, 4))).json({ error: result.slice(6) })
+const ERROR_CODES = {
+    'code_already_exists': 409,
+}
+
+router.get("/", async (req, res) => {
+
+    try{
+        const result = await cartManager.getCarts()
+
+        res.status(200).json({ status: 'success', payload: result })
+
+    } catch (error) {
+        
+        if (error.code in ERROR_CODES) {
+            res.status(ERROR_CODES[error.code].json({ error: error.message}))
+
+        } else {
+            res.status(500).json({ error: 'Internal Server Error' })
+        }
     }
-    res.status(201).json({ status: 'success', payload: result })
 })
 
-router.get('/:cid/products/:pid', async (req, res) => {
-    const cartId = parseInt(req.params.cid);
-    const productId = parseInt(req.params.pid);
+router.post('/', async (req, res) => {
+   
+    try{
+        const result = await cartManager.createCart()
+        res.status(201).json({ status: 'success', payload: result })
 
-    // Aquí deberías llamar a la función que obtiene el producto específico del carrito con el cartId y productId proporcionados.
-    const result = await cartManager.getProductFromCart(cartId, productId);
+    } catch (error) {
+        if (error.code in ERROR_CODES) {
+            res.status(ERROR_CODES[error.code].json({ error: error.message}))
 
-    if (typeof result === 'string') {
-        const error = result.split('');
-        return res.status(parseInt(error[0].slice(1, 4))).json({ error: result.slice(6) });
+        } else {
+            res.status(500).json({ error: 'Internal Server Error' })
+        }
     }
+})
 
-    res.status(200).json({ status: 'success', payload: result });
-});
+router.get('/:cid', async (req, res) => {
+    const cid = parseInt(req.params.cid)
+    
+    try {
+        const result = await cartManager.getProductsFromCart(cid)
+        res.status(200).json({ status: 'success', payload: result })
+
+    } catch (error) {
+        if (error.code in ERROR_CODES) {
+            res.status(ERROR_CODES[error.code]).json({ error: error.message })
+
+        } else {
+            res.status(500).json({ error: 'Internal Server Error' })
+        }
+    }
+})
+
+router.post("/:cid/product/:pid", async (req, res) => {
+    const cid = parseInt(req.params.cid);
+    const pid = parseInt(req.params.pid);
+    
+    try {
+        const result = await cartManager.addProductToCart(cid, pid)
+        res.status(200).json({ status: 'success', payload: result })
+
+    } catch (error) {
+        if (error.code in ERROR_CODES) {
+            res.status(ERROR_CODES[error.code]).json({ error: error.message })
+
+        } else {
+            res.status(500).json({ error: 'Internal Server Error' })
+        }
+    }
+})
 
 export default router;
