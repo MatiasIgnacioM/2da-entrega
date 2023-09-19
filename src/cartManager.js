@@ -43,7 +43,7 @@ export class CartManager {
 
     async addProductToCart(cid, pid) {
         if (!fs.existsSync(this.#fileName)) return '[666] DB file does not exists.'        
-        const result = await productManager.getProductbyId(pid)
+        const result = await productManager.getProductById(pid)
         if (typeof result == 'string') return `[666] Product with ID=${pid} was not found`
         const cart = await this.getProductFromCart(cid)
         if (typeof cart == 'string') return `[666] Cart with ID=${cid} was not found`

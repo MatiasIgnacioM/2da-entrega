@@ -1,52 +1,50 @@
 [
     {
-            "id" : 1,
-            "titulo" : "Figura Kanao",
-            "imagen" : "https://i.ibb.co/LrK2r4n/figura-2.jpg",
-            "descripcion" : "Figura Kanao, kimetsu no yaiba",
-            "categoria" : {
-                "nombre" :"Figuras",
-                "id" :"figuras"
-            },
-            "precio" : 16000,
-            "code" : "MC1"
+        "id": 1,
+        "title": "Kanao Figure",
+        "image": "https://i.ibb.co/LrK2r4n/figura-2.jpg",
+        "description": "Kanao Figure, Kimetsu no Yaiba",
+        "category": {
+            "name": "Figures",
+            "id": "figures"
         },
-    
-        {
-            "id" : 2,
-            "titulo" : "Figura Rengoku",
-            "imagen" : "https://i.ibb.co/hgPvqJK/figura.jpg",
-            "descripcion" : "Figura Rengoku 15 cm Kimetsu No Yaiba",
-            "categoria" : {
-                "nombre" :"Figuras",
-                "id" :"figuras"
-            },
-            "precio" : 18000,
-            "code" : "MC2"
+        "price": 16000,
+        "code": "MC1"
+    },
+    {
+        "id": 2,
+        "title": "Rengoku Figure",
+        "image": "https://i.ibb.co/hgPvqJK/figura.jpg",
+        "description": "Rengoku 15 cm Figure Kimetsu No Yaiba",
+        "category": {
+            "name": "Figures",
+            "id": "figures"
         },
-        {
-            "id" : 3,
-            "titulo" : "Monedero Totoro",
-            "imagen" : "https://i.ibb.co/RDkHZ11/monedero.jpg",
-            "descripcion" : "Monedero de totoro tamaño normal.",
-            "categoria" : {
-                "nombre" :"Otros",
-                "id" :"otros"
-            },
-            "precio" : 4000,
-            "code" : "MC3"
+        "price": 18000,
+        "code": "MC2"
+    },
+    {
+        "id": 3,
+        "title": "Totoro Wallet",
+        "image": "https://i.ibb.co/RDkHZ11/monedero.jpg",
+        "description": "Normal-sized Totoro wallet.",
+        "category": {
+            "name": "Others",
+            "id": "others"
         },
-        {
-            "id" : 4,
-            "titulo" : "Box mediana",
-            "imagen" : "https://i.ibb.co/MsZDYMh/box.jpg",
-            "descripcion" : "Box mediana para regalo Jujutsu Kaisen.",
-            "categoria" : {
-                "nombre" :"Boxes",
-                "id" :"boxes"
-            },
-            "precio" : 20000,
-            "code" : "MC4"
-            
-        }
-    ]
+        "price": 4000,
+        "code": "MC3"
+    },
+    {
+        "id": 4,
+        "title": "Medium Box",
+        "image": "https://i.ibb.co/MsZDYMh/box.jpg",
+        "description": "Medium-sized gift box for Jujutsu Kaisen.",
+        "category": {
+            "name": "Boxes",
+            "id": "boxes"
+        },
+        "price": 20000,
+        "code": "MC4"
+    }
+]

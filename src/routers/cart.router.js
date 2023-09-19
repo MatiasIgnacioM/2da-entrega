@@ -46,7 +46,7 @@ router.get('/:cid', async (req, res) => {
     const cid = parseInt(req.params.cid)
     
     try {
-        const result = await cartManager.getProductsFromCart(cid)
+        const result = await cartManager.getProductFromCart(cid)
         res.status(200).json({ status: 'success', payload: result })
 
     } catch (error) {
