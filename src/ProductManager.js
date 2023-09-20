@@ -20,7 +20,7 @@ export class ProductManager {
   }
 
   async addProduct(product) {
-    // Validación de campos requeridos y nombres en inglés (como mencionaste anteriormente)
+    
     if (!product.title || !product.description || !product.price || !product.category || !product.image) {
       return '[400] Missing required fields: title, description, price, category, image';
     }
@@ -29,13 +29,13 @@ export class ProductManager {
     let data = await fs.promises.readFile(this.#fileName, 'utf-8');
     let products = JSON.parse(data);
   
-    // Verificar si el código ya existe en la lista
+    
     const codeExists = products.some(item => item.code === product.code);
     if (codeExists) {
       return '[400] Product code already exists';
     }
   
-    // Resto del código para agregar el producto
+    
     const productAdd = { id: this.#generateID(products), status: true, thumbnails: [], ...product };
     products.push(productAdd);
     await fs.promises.writeFile(this.#fileName, JSON.stringify(products, null, 2));
