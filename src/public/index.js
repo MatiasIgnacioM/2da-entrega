@@ -9,7 +9,7 @@ document.getElementById('createBtn').addEventListener('click', async (e) => {
         title: document.getElementById('title').value,
         description: document.getElementById('description').value,
         price: document.getElementById('price').value,
-        Image: ['sin imagen'],
+        image: ['sin imagen'],
         code: document.getElementById('code').value,
         stock: document.getElementById('stock').value,
         category: document.getElementById('category').value,

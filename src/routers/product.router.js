@@ -68,7 +68,7 @@ router.put('/:pid', async (req, res) => {
     const data = req.body
     
     try {
-        const result = await productManager.updateProduct(pid)
+        const result = await productManager.updateProduct(pid,data)
 
         res.status(201).json({ status: "success", payload: result })
 
