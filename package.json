@@ -1,9 +1,9 @@
 {
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon"
+    "start": "node .",
+    "dev": "nodemon ."
   },
-  "name": "segundaentrega",
+  "name": "matiasmaldonado",
   "version": "1.0.0",
   "main": "src/app.js",
   "type": "module",
@@ -22,7 +22,9 @@
     "express": "^4.18.2",
     "express-handlebars": "^7.1.2",
     "handlebars": "^4.7.8",
+    "mongoose": "^7.5.3",
     "socket.io": "^4.7.2"
   },
-  "description": ""
+  "description": "",
+  "devDependencies": {}
 }

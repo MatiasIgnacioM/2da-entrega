@@ -4,7 +4,7 @@ import handlebars from 'express-handlebars'
 import productsRouter from './routers/product.router.js'
 import cartsRouter from './routers/cart.router.js'
 import viewsRouter from './routers/view.router.js'
-import ProductManager from './productManager.js'
+import ProductManager from '../src/dao/filesystem/productManager.js'
 
 const app = express()
 

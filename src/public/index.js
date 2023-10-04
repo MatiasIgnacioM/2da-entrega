@@ -23,27 +23,19 @@ document.getElementById('createBtn').addEventListener('click', async (e) => {
             'Content-type': 'application/json'
         }
     })
-        .then((result) => result.json())
-        .then((result) => {
+        .then(result => result.json())
+        .then(result => {
 
-            if (result.status === 'error') {
-
-                throw alert("error!")
-            }
+            if (result.status === 'error') throw new Error(result.error)
+            
         })
         .then(() => fetch('/api/products'))
         .then((result) => result.json())
         .then((result) => {
 
-            if (result.status === 'error') {
-
-                throw alert("error!")
-            }
-
-            socket.emit('productList', result.payload)
-
+            if (result.status === 'error') throw new Error(result.error)
+            else socket.emit('productList', result.payload)
             alert(`Todo salió bien!! \nEl producto se ha agregado con éxito!\n\nVista actualizada`)
-
             document.getElementById('title').value = ''
             document.getElementById('description').value = ''
             document.getElementById('price').value = ''
