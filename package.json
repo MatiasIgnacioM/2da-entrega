@@ -26,5 +26,6 @@
     "socket.io": "^4.7.2",
     "sockets": "^0.4.2"
   },
-  "description": ""
+  "description": "",
+  "devDependencies": {}
 }
