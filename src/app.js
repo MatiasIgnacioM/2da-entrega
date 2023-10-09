@@ -8,7 +8,7 @@ import cartsRouter from './routers/cart.router.js'
 import viewsRouter from './routers/view.router.js'
 import chatRouter from './routers/chat.router.js'
 
-const MONGO_URI = 'mongodb+srv://matias:<trololo123>@cluster0.ielbqtx.mongodb.net/'
+const MONGO_URI = 'mongodb+srv://monoschinos:trololo123@monoschinos.hfw3qc1.mongodb.net/'
 const MONGO_DB_NAME = 'monoschinos'
 export const PORT = 8080
 
