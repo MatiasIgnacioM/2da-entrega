@@ -1,104 +1,116 @@
-import { Router } from "express";
-import { ProductManager } from "../dao/filesystem/productManager.js";
+import { Router } from 'express'
+import productModel from "../dao/models/product.model.js"
+import { PORT } from '../app.js'
 
-const router = Router() 
-const productManager = new ProductManager("./data/products.json")
+const router = Router()
 
-const ERROR_CODES = {
-  'product_not_found': 404, 
-  'invalid_data': 400
+export const getProducts = async (req, res) => {
+    try {
+        const limit = req.query.limit || 10
+        const page = req.query.page || 1
+        const filterOptions = {}
+        if (req.query.stock) filterOptions.stock = req.query.stock
+        if (req.query.category) filterOptions.category = req.query.category
+        const paginateOptions = { lean: true, limit, page }
+        if (req.query.sort === 'asc') paginateOptions.sort = { price: 1 }
+        if (req.query.sort === 'desc') paginateOptions.sort = { price: -1 }
+        const result = await productModel.paginate(filterOptions, paginateOptions)
+        let prevLink
+        if (!req.query.page) {
+            prevLink = `http://${req.hostname}:${PORT}${req.originalUrl}&page=${result.prevPage}`
+        } else {
+            const modifiedUrl = req.originalUrl.replace(`page=${req.query.page}`, `page=${result.prevPage}`)
+            prevLink = `http://${req.hostname}:${PORT}${modifiedUrl}`
+        }
+        let nextLink
+        if (!req.query.page) {
+            nextLink = `http://${req.hostname}:${PORT}${req.originalUrl}&page=${result.nextPage}`
+        } else {
+            const modifiedUrl = req.originalUrl.replace(`page=${req.query.page}`, `page=${result.nextPage}`)
+            nextLink = `http://${req.hostname}:${PORT}${modifiedUrl}`
+        }
+        return {
+            statusCode: 200,
+            response: { 
+                status: 'success', 
+                payload: result.docs,
+                totalPages: result.totalPages,
+                prevPage: result.prevPage,
+                nextPage: result.nextPage,
+                page: result.page,
+                hasPrevPage: result.hasPrevPage,
+                hasNextPage: result.hasNextPage,
+                prevLink: result.hasPrevPage ? prevLink : null,
+                nextLink: result.hasNextPage ? nextLink : null
+            }
+        }
+    } catch(err) {
+        return {
+            statusCode: 500,
+            response: { status: 'error', error: err.message }
+        }
+    }
 }
 
 router.get('/', async (req, res) => {
-    try {
-        const result = await productManager.getProducts()
-        const limit = req.query.limit 
-
-        res.status(200).json({ status: 'success', payload: result.slice(0, limit)})
-
-    } catch (error) {
-        if (error.code in ERROR_CODES) {
-            res.status(ERROR_CODES[error.code]).json({ error: error.message })
-
-        } else {
-            res.status(500).json({ error: 'Internal Server Error' })
-        }
-    }
+    const result = await getProducts(req, res)
+    res.status(result.statusCode).json(result.response)
 })
 
 router.get('/:pid', async (req, res) => {
-    const pid = parseInt(req.params.pid);
-    
     try {
-        const result = await productManager.getProductById(pid)
-        res.status(200).json({ status: 'success', payload: result })
-
-    } catch (error) {
-        if (error.code in ERROR_CODES) {
-            return res.status(ERROR_CODES[error.code]).json({ error: error.message })
-
-        } else {
-            return res.status(500).json({ error: 'Internal Server Error' })
+        const id = req.params.pid
+        const result = await productModel.findById(id).lean().exec()
+        if (result === null) {
+            return res.status(404).json({ status: 'error', error: 'Not found' })
         }
+        res.status(200).json({ status: 'success', payload: result })
+    } catch(err) {
+        res.status(500).json({ status: 'error', error: err.message })
     }
 })
-
 
 router.post('/', async (req, res) => {
-    const product = req.body
-    
     try {
-        const result = await productManager.addProduct(product)
-
+        const product = req.body
+        const result = await productModel.create(product)
+        const products = await productModel.find().lean().exec()
+        req.io.emit('updatedProducts', products)
         res.status(201).json({ status: 'success', payload: result })
-
-    } catch (error) {
-        if (error.code in ERROR_CODES) {
-            res.status(ERROR_CODES[error.code]).json({ error: error.message })
-
-        } else {
-            res.status(500).json({ error: 'Internal Server Error' })
-        }
+    } catch(err) {
+        res.status(500).json({ status: 'error', error: err.message })
     }
 })
-
 
 router.put('/:pid', async (req, res) => {
-    const pid = parseInt(req.params.pid)
-    const data = req.body
-    
     try {
-        const result = await productManager.updateProduct(pid,data)
-
-        res.status(201).json({ status: "success", payload: result })
-
-    } catch (error) {
-        if (error.code in ERROR_CODES) {
-            res.status(ERROR_CODES[error.code]).json({ error: error.message })
-
-        } else {
-            res.status(500).json({ error: 'Internal Server Error' })
+        const id = req.params.pid
+        const data = req.body
+        const result = await productModel.findByIdAndUpdate(id, data, { returnDocument: 'after' })
+        if (result === null) {
+            return res.status(404).json({ status: 'error', error: 'Not found' })
         }
+        const products = await productModel.find().lean().exec()
+        req.io.emit('updatedProducts', products)
+        res.status(200).json({ status: 'success', payload: result })
+    } catch(err) {
+        res.status(500).json({ status: 'error', error: err.message })
     }
 })
 
-
-router.delete("/:pid", async (req, res) => {
-    const pid = parseInt(req.params.pid);
-    
+router.delete('/:pid', async (req, res) => {
     try {
-        const result = await productManager.deleteProduct(pid)
-
-        res.status(201).json({ status: "success", payload: result })
-
-    } catch (error) {
-        if (error.code in ERROR_CODES) {
-            res.status(ERROR_CODES[error.code]).json({ error: error.message })
-
-        } else {
-            res.status(500).json({ error: 'Internal Server Error' })
+        const id = req.params.pid
+        const result = await productModel.findByIdAndDelete(id)
+        if (result === null) {
+            return res.status(404).json({ status: 'error', error: 'Not found' })
         }
+        const products = await productModel.find().lean().exec()
+        req.io.emit('updatedProducts', products)
+        res.status(200).json({ status: 'success', payload: products })
+    } catch(err) {
+        res.status(500).json({ status: 'error', error: err.message })
     }
 })
 
-export default router;
+export default router
